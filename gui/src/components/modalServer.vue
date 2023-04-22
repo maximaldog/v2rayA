@@ -98,15 +98,6 @@
               <option value="tls">tls</option>
             </b-select>
           </b-field>
-          <b-field v-show="v2ray.tls !== 'none'">
-            <b-input
-              ref="v2ray_flow"
-              v-model="v2ray.flow"
-              required
-              placeholder=""
-              expanded
-            />
-          </b-field>
           <b-field v-show="v2ray.tls !== 'none'" label-position="on-border">
             <template slot="label">
               AllowInsecure
@@ -800,7 +791,6 @@ export default {
       host: "",
       path: "",
       tls: "none",
-      flow: "",
       alpn: "",
       scy: "auto",
       v: "",
@@ -867,6 +857,13 @@ export default {
     },
     tabChoice: 0,
   }),
+  computed: {
+    filteredDataArray() {
+      return this.presetFlows.filter((option) => {
+        return option.toString().indexOf(this.v2ray.flow) >= 0;
+      });
+    },
+  },
   mounted() {
     if (this.which !== null) {
       this.$axios({
@@ -960,7 +957,6 @@ export default {
           path: u.params.path || u.params.serviceName || "",
           alpn: u.params.alpn || "",
           tls: u.params.security || "none",
-          flow: u.params.flow || "",
           allowInsecure: u.params.allowInsecure || false,
           protocol: "vless",
         };
